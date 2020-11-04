@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import time
+
 # Load Yolo
 net = cv2.dnn.readNet("yolov3_training_last.weights", "yolov3_training.cfg")
 classes = []
@@ -16,6 +17,14 @@ cap = cv2.VideoCapture("IMG_0798.MOV")
 font = cv2.FONT_HERSHEY_PLAIN
 starting_time = time.time()
 frame_id = 0
+
+# save video
+fps = int(cap.get(cv2.CAP_PROP_FPS))
+frame_width = int(cap.get(3))
+frame_height = int(cap.get(4))
+size = (frame_width, frame_height)
+forcc = cv2.VideoWriter_fourcc('m','p','4','v')
+out_video = cv2.VideoWriter('output.mp4', forcc, fps, size)
 
 while True:
     _, frame = cap.read()
@@ -65,6 +74,7 @@ while True:
             fps = frame_id / elapsed_time
             cv2.putText(frame, "FPS: " + str(round(fps, 2)), (10, 50), font, 3, (0, 0, 0), 3)
             cv2.imshow("Image", frame)
+            out_video.write(frame)
             key = cv2.waitKey(1)
             if key == 27:
                 break
